@@ -2,8 +2,8 @@
 
 from typing import Any, Optional
 
+from intuitlib.client import AuthClient
 from quickbooks import QuickBooks
-from quickbooks.auth import AuthClient
 from quickbooks.objects.account import Account
 from quickbooks.objects.bill import Bill
 from quickbooks.objects.billpayment import BillPayment
@@ -296,6 +296,9 @@ class QuickBooksClient:
         """
         Delete an entity from QuickBooks.
 
+        Note: Not all entities support deletion in QuickBooks.
+        This method uses void for transaction entities.
+
         Args:
             entity_type: Entity type to delete
             entity_id: Entity ID to delete
@@ -309,8 +312,20 @@ class QuickBooksClient:
 
         try:
             entity = entity_class.get(entity_id, qb=self.qb_client)
-            entity.delete(qb=self.qb_client)
+
+            # Check if entity has delete method (some entities support it)
+            if hasattr(entity, "delete"):
+                entity.delete(qb=self.qb_client)
+            else:
+                # For entities without delete, we just mark as inactive
+                # or use a void operation for transaction entities
+                raise APIError(
+                    f"Entity type {entity_type} does not support direct deletion. "
+                    "Use void operation for transaction entities."
+                )
             return True
+        except APIError:
+            raise
         except Exception as e:
             if "401" in str(e):
                 raise TokenExpiredError()

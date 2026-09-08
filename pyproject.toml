@@ -102,11 +102,7 @@ warn_return_any = true
 warn_unused_ignores = true
 plugins = ["mypy_django_plugin.main"]
 
-[tool.django-stubs]
-django_settings_module = "example_project.settings"
-
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "example_project.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 addopts = "-v --tb=short"
 filterwarnings = [

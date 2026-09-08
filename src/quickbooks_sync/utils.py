@@ -26,16 +26,17 @@ def generate_idempotency_key(
         entity_type: The type of entity (e.g., 'Customer', 'Invoice')
         entity_id: The ID of the entity
         action: The action being performed (e.g., 'create', 'update')
-        timestamp: Optional timestamp to include (for uniqueness)
+        timestamp: Optional timestamp to include (for uniqueness).
+                   If not provided, the key is deterministic based on
+                   entity_type, entity_id, and action only.
 
     Returns:
         A unique idempotency key string
     """
-    if timestamp is None:
-        timestamp = django_timezone.now()
-
-    # Create a deterministic key based on entity and action
-    key_data = f"{entity_type}:{entity_id}:{action}:{timestamp.isoformat()}"
+    if timestamp is not None:
+        key_data = f"{entity_type}:{entity_id}:{action}:{timestamp.isoformat()}"
+    else:
+        key_data = f"{entity_type}:{entity_id}:{action}"
     return hashlib.sha256(key_data.encode()).hexdigest()
 
 
@@ -162,8 +163,10 @@ def mask_sensitive_data(data: str, visible_chars: int = 4) -> str:
     Returns:
         Masked string (e.g., "****1234")
     """
+    if not data:
+        return data
     if len(data) <= visible_chars:
-        return "*" * len(data)
+        return data
     return "*" * (len(data) - visible_chars) + data[-visible_chars:]
 
 

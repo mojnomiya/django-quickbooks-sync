@@ -22,18 +22,16 @@ class SyncEngineTest(TestCase):
             token_expires_at=timezone.now() + timezone.timedelta(hours=1),
         )
         self.engine = SyncEngine(self.realm)
+        self.mock_client = MagicMock()
+        self.engine.client = self.mock_client
 
-    @patch("quickbooks_sync.sync_engine.QuickBooksClient")
-    def test_sync_to_qbo(self, mock_client_class):
+    @patch("quickbooks_sync.sync_engine.per_realm_rate_limiter")
+    def test_sync_to_qbo(self, mock_rate_limiter):
         """Test syncing to QuickBooks."""
-        mock_client = MagicMock()
-        mock_client_class.return_value = mock_client
-
-        # Mock entity doesn't exist, so create it
-        mock_client.get_entity.side_effect = Exception("Not found")
+        self.mock_client.get_entity.side_effect = Exception("Not found")
         mock_entity = MagicMock()
         mock_entity.id = "456"
-        mock_client.create_entity.return_value = mock_entity
+        self.mock_client.create_entity.return_value = mock_entity
 
         result = self.engine.sync_to_qbo(
             entity_type="Customer",
@@ -43,19 +41,16 @@ class SyncEngineTest(TestCase):
 
         self.assertEqual(result.status, SyncLog.Status.SUCCESS)
 
-    @patch("quickbooks_sync.sync_engine.QuickBooksClient")
-    def test_sync_from_qbo(self, mock_client_class):
+    @patch("quickbooks_sync.sync_engine.per_realm_rate_limiter")
+    def test_sync_from_qbo(self, mock_rate_limiter):
         """Test syncing from QuickBooks."""
-        mock_client = MagicMock()
-        mock_client_class.return_value = mock_client
-
         mock_entity = MagicMock()
         mock_entity.id = "123"
         mock_entity.to_dict.return_value = {
             "id": "123",
             "name": "Test Customer",
         }
-        mock_client.get_entity.return_value = mock_entity
+        self.mock_client.get_entity.return_value = mock_entity
 
         result = self.engine.sync_from_qbo(
             entity_type="Customer",
@@ -65,14 +60,10 @@ class SyncEngineTest(TestCase):
         self.assertIn("id", result)
         self.assertEqual(result["id"], "123")
 
-    @patch("quickbooks_sync.sync_engine.QuickBooksClient")
-    def test_sync_to_qbo_error(self, mock_client_class):
+    def test_sync_to_qbo_error(self):
         """Test sync to QuickBooks with error."""
-        mock_client = MagicMock()
-        mock_client_class.return_value = mock_client
-
-        mock_client.get_entity.side_effect = Exception("Not found")
-        mock_client.create_entity.side_effect = Exception("API Error")
+        self.mock_client.get_entity.side_effect = Exception("Not found")
+        self.mock_client.create_entity.side_effect = Exception("API Error")
 
         with self.assertRaises(SyncError):
             self.engine.sync_to_qbo(
@@ -81,14 +72,10 @@ class SyncEngineTest(TestCase):
                 entity_data={"name": "Test Customer"},
             )
 
-    @patch("quickbooks_sync.sync_engine.QuickBooksClient")
-    def test_full_sync(self, mock_client_class):
+    @patch("quickbooks_sync.sync_engine.per_realm_rate_limiter")
+    def test_full_sync(self, mock_rate_limiter):
         """Test full sync."""
-        mock_client = MagicMock()
-        mock_client_class.return_value = mock_client
-
-        # Mock empty results
-        mock_client.query_entities.return_value = []
+        self.mock_client.query_entities.return_value = []
 
         results = self.engine.full_sync(entity_types=["Customer"])
 

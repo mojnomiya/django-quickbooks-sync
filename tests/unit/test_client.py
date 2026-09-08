@@ -126,6 +126,29 @@ class QuickBooksClientTest(TestCase):
         """Test successful entity deletion."""
         mock_entity = MagicMock()
         mock_entity.delete.return_value = None
-        mock_qb.return_value.delete_entity.return_value = mock_entity
-        result = self.client.delete_entity("Customer", "123")
-        self.assertTrue(result)
+        mock_entity_class = MagicMock()
+        mock_entity_class.get.return_value = mock_entity
+        mock_entity_class.delete = lambda self, **kwargs: None
+
+        # Mock the entity class to have delete method
+        import quickbooks_sync.client as client_module
+
+        original_map = client_module.ENTITY_MAP.copy()
+        client_module.ENTITY_MAP["TestEntity"] = mock_entity_class
+
+        try:
+            # Create a simple class with delete method
+            class TestEntityWithDelete:
+                @classmethod
+                def get(cls, entity_id, qb=None):
+                    return mock_entity
+
+                def delete(self, qb=None):
+                    pass
+
+            client_module.ENTITY_MAP["TestEntity"] = TestEntityWithDelete
+            result = self.client.delete_entity("TestEntity", "123")
+            self.assertTrue(result)
+        finally:
+            client_module.ENTITY_MAP.clear()
+            client_module.ENTITY_MAP.update(original_map)
