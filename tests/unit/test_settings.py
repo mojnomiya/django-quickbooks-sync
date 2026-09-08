@@ -2,7 +2,11 @@
 
 from django.test import TestCase, override_settings
 
-from quickbooks_sync.settings import QuickBooksSyncSettings, get_settings, validate_settings
+from quickbooks_sync.settings import (
+    QuickBooksSyncSettings,
+    get_settings,
+    validate_settings,
+)
 
 
 class SettingsTest(TestCase):
@@ -58,7 +62,7 @@ class QuickBooksSyncSettingsTest(TestCase):
 
     def test_getattr_default(self):
         """Test getting attribute with default."""
-        settings = QuickBooksSyncSettings()
+        QuickBooksSyncSettings()
         # ENVIRONMENT has a default of 'sandbox'
         # When not set in Django settings, it should use the default
         # Note: We can't easily test this without mocking settings

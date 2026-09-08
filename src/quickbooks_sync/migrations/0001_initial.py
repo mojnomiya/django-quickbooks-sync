@@ -357,9 +357,7 @@ class Migration(migrations.Migration):
                     ),
                     models.Index(fields=["action"], name="quickbooks__action__idx"),
                     models.Index(fields=["outcome"], name="quickbooks__outcome__idx"),
-                    models.Index(
-                        fields=["timestamp"], name="quickbooks__timesta__idx"
-                    ),
+                    models.Index(fields=["timestamp"], name="quickbooks__timesta__idx"),
                 ],
             },
         ),
@@ -486,7 +484,9 @@ class Migration(migrations.Migration):
                         fields=["entity_type", "entity_id"],
                         name="quickbooks__webhook__idx",
                     ),
-                    models.Index(fields=["status"], name="quickbooks__webhook__status_idx"),
+                    models.Index(
+                        fields=["status"], name="quickbooks__webhook__status_idx"
+                    ),
                 ],
             },
         ),

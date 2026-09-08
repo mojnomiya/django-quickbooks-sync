@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 
 from quickbooks_sync.client import QuickBooksClient
-from quickbooks_sync.exceptions import APIError, OAuthError, RateLimitError
+from quickbooks_sync.exceptions import APIError, OAuthError
 
 
 class QuickBooksClientTest(TestCase):
@@ -62,11 +62,11 @@ class QuickBooksClientTest(TestCase):
     @patch("quickbooks_sync.client.AuthClient")
     def test_exchange_code_failure(self, mock_auth_client):
         """Test failed code exchange."""
-        mock_auth_client.return_value.create_token.side_effect = Exception("Invalid code")
+        mock_auth_client.return_value.create_token.side_effect = Exception(
+            "Invalid code"
+        )
         with self.assertRaises(OAuthError):
-            self.client.exchange_code(
-                "https://example.com/callback?code=invalid"
-            )
+            self.client.exchange_code("https://example.com/callback?code=invalid")
 
     @patch("quickbooks_sync.client.AuthClient")
     def test_refresh_access_token_success(self, mock_auth_client):

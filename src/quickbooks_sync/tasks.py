@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from quickbooks_sync.client import QuickBooksClient
 from quickbooks_sync.exceptions import OAuthError, SyncError
-from quickbooks_sync.models import QuickBooksRealm, SyncLog
+from quickbooks_sync.models import QuickBooksRealm
 from quickbooks_sync.sync_engine import SyncEngine
 
 logger = logging.getLogger(__name__)
@@ -55,7 +55,7 @@ def sync_entity(
             if entity_data is None:
                 return {"error": "entity_data is required for to_qbo sync"}
 
-            sync_log = engine.sync_to_qbo(
+            engine.sync_to_qbo(
                 entity_type=entity_type,
                 entity_id=entity_id,
                 entity_data=entity_data,
@@ -65,7 +65,6 @@ def sync_entity(
                 entity_type=entity_type,
                 entity_id=entity_id,
             )
-            sync_log = None
 
         return {
             "status": "success",
@@ -84,9 +83,7 @@ def sync_entity(
         }
 
     except SyncError as e:
-        logger.warning(
-            f"Sync error for {entity_type}:{entity_id}, retrying: {str(e)}"
-        )
+        logger.warning(f"Sync error for {entity_type}:{entity_id}, retrying: {str(e)}")
         raise self.retry(exc=e)
 
     except Exception as e:
@@ -141,7 +138,9 @@ def full_sync(
         }
 
     except Exception as e:
-        logger.error(f"Unexpected error during full sync for realm {realm_id}: {str(e)}")
+        logger.error(
+            f"Unexpected error during full sync for realm {realm_id}: {str(e)}"
+        )
         raise self.retry(exc=e)
 
 
@@ -199,7 +198,9 @@ def refresh_token(realm_id: int) -> dict:
         }
 
     except Exception as e:
-        logger.error(f"Unexpected error refreshing token for realm {realm_id}: {str(e)}")
+        logger.error(
+            f"Unexpected error refreshing token for realm {realm_id}: {str(e)}"
+        )
         return {
             "status": "error",
             "error": str(e),
@@ -262,7 +263,7 @@ def process_webhook(
         if operation in ("Create", "Update"):
             # Sync entity from QBO
             engine = SyncEngine(realm)
-            entity_data = engine.sync_from_qbo(
+            engine.sync_from_qbo(
                 entity_type=entity_type,
                 entity_id=entity_id,
             )
@@ -366,7 +367,9 @@ def check_tokens() -> dict:
             refresh_token.delay(realm.id)
             results["refreshed"] += 1
         except Exception as e:
-            logger.error(f"Failed to queue token refresh for realm {realm.id}: {str(e)}")
+            logger.error(
+                f"Failed to queue token refresh for realm {realm.id}: {str(e)}"
+            )
             results["errors"] += 1
 
     return results

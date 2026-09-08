@@ -1,8 +1,5 @@
 """Tests for quickbooks_sync rate limiter."""
 
-import time
-from unittest.mock import patch
-
 from django.test import TestCase
 
 from quickbooks_sync.exceptions import RateLimitError

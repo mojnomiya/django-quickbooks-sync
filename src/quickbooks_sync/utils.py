@@ -4,7 +4,7 @@ import hashlib
 import hmac
 import json
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Any, Optional
 
 from django.utils import timezone as django_timezone

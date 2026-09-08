@@ -1,24 +1,16 @@
 """Core sync engine for QuickBooks integration."""
 
-from datetime import datetime
 from typing import Any, Optional
 
 from django.utils import timezone
 
 from quickbooks_sync.client import QuickBooksClient
-from quickbooks_sync.exceptions import (
-    ConflictError,
-    SyncError,
-    ValidationError,
-)
+from quickbooks_sync.exceptions import ConflictError, SyncError
 from quickbooks_sync.idempotency import idempotency_manager
 from quickbooks_sync.models import AuditEntry, QuickBooksRealm, SyncLog
 from quickbooks_sync.rate_limiter import per_realm_rate_limiter
 from quickbooks_sync.settings import qbs_settings
-from quickbooks_sync.utils import (
-    generate_idempotency_key,
-    parse_qbo_datetime,
-)
+from quickbooks_sync.utils import parse_qbo_datetime
 
 
 class SyncEngine:
@@ -92,7 +84,7 @@ class SyncEngine:
 
             # Check if entity exists in QBO
             try:
-                qbo_entity = self.client.get_entity(entity_type, entity_id)
+                self.client.get_entity(entity_type, entity_id)
                 # Update existing entity
                 result = self.client.update_entity(entity_type, entity_id, entity_data)
                 action = AuditEntry.Action.UPDATE
@@ -429,9 +421,7 @@ class SyncEngine:
         if strategy == "source_wins":
             # Local data wins, push to QBO
             try:
-                result = self.client.update_entity(
-                    entity_type, entity_id, entity_data
-                )
+                result = self.client.update_entity(entity_type, entity_id, entity_data)
                 idempotency_manager.update_log(
                     sync_log,
                     status=SyncLog.Status.SUCCESS,

@@ -107,9 +107,7 @@ class IdempotencyManagerTest(TestCase):
             idempotency_key="test_key_123",
         )
         # Make the log old
-        SyncLog.objects.filter(id=sync_log.id).update(
-            created_at="2020-01-01T00:00:00Z"
-        )
+        SyncLog.objects.filter(id=sync_log.id).update(created_at="2020-01-01T00:00:00Z")
         deleted_count = self.manager.cleanup_expired_keys(days=30)
         self.assertGreater(deleted_count, 0)
 

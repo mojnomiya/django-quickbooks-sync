@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from quickbooks_sync.exceptions import SyncError
-from quickbooks_sync.models import AuditEntry, QuickBooksRealm, SyncLog
+from quickbooks_sync.models import QuickBooksRealm, SyncLog
 from quickbooks_sync.sync_engine import SyncEngine
 
 

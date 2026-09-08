@@ -209,8 +209,7 @@ class PerRealmRateLimiter:
         with self._lock:
             return {
                 "realms": {
-                    rid: limiter.get_status()
-                    for rid, limiter in self._limiters.items()
+                    rid: limiter.get_status() for rid, limiter in self._limiters.items()
                 }
             }
 

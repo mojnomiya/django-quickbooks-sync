@@ -1,8 +1,8 @@
 """Management command for webhook setup."""
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from quickbooks_sync.models import QuickBooksRealm, WebhookEvent
+from quickbooks_sync.models import WebhookEvent
 from quickbooks_sync.settings import qbs_settings
 
 
@@ -46,26 +46,40 @@ class Command(BaseCommand):
             return
 
         self.stdout.write(
-            self.style.WARNING("Please specify an action: --setup, --list-events, or --retry-failed")
+            self.style.WARNING(
+                "Please specify an action: --setup, --list-events, or --retry-failed"
+            )
         )
 
     def show_setup_instructions(self):
         """Show webhook setup instructions."""
-        self.stdout.write(self.style.HTTP_INFO("QuickBooks Webhook Setup Instructions\n"))
+        self.stdout.write(
+            self.style.HTTP_INFO("QuickBooks Webhook Setup Instructions\n")
+        )
         self.stdout.write("=" * 60)
 
-        self.stdout.write("\n1. Register your webhook endpoint in the Intuit Developer Portal:")
-        self.stdout.write("   - Go to https://developer.intuit.com/app/developer/dashboard")
+        self.stdout.write(
+            "\n1. Register your webhook endpoint in the Intuit Developer Portal:"
+        )
+        self.stdout.write(
+            "   - Go to https://developer.intuit.com/app/developer/dashboard"
+        )
         self.stdout.write("   - Select your app")
         self.stdout.write("   - Go to 'Keys & OAuth' > 'Your App's Webhooks'")
-        self.stdout.write(f"   - Enter your webhook URL: https://your-domain.com/quickbooks/webhook/")
-        self.stdout.write(f"   - Enter the Verifier Token: {qbs_settings.WEBHOOK_VERIFIER_TOKEN or 'NOT SET'}")
+        self.stdout.write(
+            "   - Enter your webhook URL: https://your-domain.com/quickbooks/webhook/"
+        )
+        self.stdout.write(
+            f"   - Enter the Verifier Token: {qbs_settings.WEBHOOK_VERIFIER_TOKEN or 'NOT SET'}"
+        )
 
         self.stdout.write("\n2. Configure your Django settings:")
         self.stdout.write("   Add to your settings.py:")
         self.stdout.write("   ```")
         self.stdout.write("   QUICKBOOKS_SYNC_WEBHOOK_ENABLED = True")
-        self.stdout.write(f"   QUICKBOOKS_SYNC_WEBHOOK_VERIFIER_TOKEN = '{qbs_settings.WEBHOOK_VERIFIER_TOKEN or 'your-verifier-token'}'")
+        self.stdout.write(
+            f"   QUICKBOOKS_SYNC_WEBHOOK_VERIFIER_TOKEN = '{qbs_settings.WEBHOOK_VERIFIER_TOKEN or 'your-verifier-token'}'"
+        )
         self.stdout.write("   ```")
 
         self.stdout.write("\n3. Add URL configuration:")
@@ -78,7 +92,9 @@ class Command(BaseCommand):
         self.stdout.write("   ```")
 
         self.stdout.write("\n4. Test your webhook endpoint:")
-        self.stdout.write("   Use the Intuit webhook testing tool in the developer portal")
+        self.stdout.write(
+            "   Use the Intuit webhook testing tool in the developer portal"
+        )
 
         self.stdout.write("\n" + "=" * 60)
         self.stdout.write(
@@ -118,7 +134,9 @@ class Command(BaseCommand):
             return
 
         self.stdout.write(
-            self.style.HTTP_INFO(f"Retrying {failed_events.count()} failed event(s)...\n")
+            self.style.HTTP_INFO(
+                f"Retrying {failed_events.count()} failed event(s)...\n"
+            )
         )
 
         from quickbooks_sync.tasks import process_webhook
@@ -134,6 +152,6 @@ class Command(BaseCommand):
                     operation=event.operation,
                     last_updated=event.last_updated.isoformat(),
                 )
-                self.stdout.write(self.style.SUCCESS(f"    Queued for retry"))
+                self.stdout.write(self.style.SUCCESS("    Queued for retry"))
             except Exception as e:
                 self.stdout.write(self.style.ERROR(f"    Failed to queue: {str(e)}"))

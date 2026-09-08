@@ -1,7 +1,6 @@
 """Settings for quickbooks_sync."""
 
 from django.conf import settings
-from django.test import TestCase
 
 # Default settings
 DEFAULT_SETTINGS = {

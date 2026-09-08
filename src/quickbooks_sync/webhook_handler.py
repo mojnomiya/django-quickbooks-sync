@@ -4,15 +4,12 @@ import hashlib
 import hmac
 import json
 import logging
-from typing import Optional
 
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
-from quickbooks_sync.exceptions import WebhookError
-from quickbooks_sync.models import QuickBooksRealm, WebhookEvent
+from quickbooks_sync.models import QuickBooksRealm
 from quickbooks_sync.settings import qbs_settings
 from quickbooks_sync.tasks import process_webhook
 

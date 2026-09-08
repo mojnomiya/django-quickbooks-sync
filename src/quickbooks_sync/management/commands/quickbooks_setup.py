@@ -6,7 +6,7 @@ from django.utils import timezone
 from quickbooks_sync.client import QuickBooksClient
 from quickbooks_sync.exceptions import OAuthError
 from quickbooks_sync.models import QuickBooksRealm
-from quickbooks_sync.settings import qbs_settings, validate_settings
+from quickbooks_sync.settings import validate_settings
 
 
 class Command(BaseCommand):
@@ -99,9 +99,7 @@ class Command(BaseCommand):
         if errors:
             for error in errors:
                 self.stdout.write(self.style.ERROR(f"  - {error}"))
-            raise CommandError(
-                "Please fix configuration errors before running setup"
-            )
+            raise CommandError("Please fix configuration errors before running setup")
 
         # Get realm details
         realm_id = input("QuickBooks Realm ID (Company ID): ").strip()
@@ -133,11 +131,15 @@ class Command(BaseCommand):
 
         if created:
             self.stdout.write(
-                self.style.SUCCESS(f"Created new realm: {realm.company_name} ({realm.realm_id})")
+                self.style.SUCCESS(
+                    f"Created new realm: {realm.company_name} ({realm.realm_id})"
+                )
             )
         else:
             self.stdout.write(
-                self.style.SUCCESS(f"Updated existing realm: {realm.company_name} ({realm.realm_id})")
+                self.style.SUCCESS(
+                    f"Updated existing realm: {realm.company_name} ({realm.realm_id})"
+                )
             )
 
         # Test connection
@@ -149,17 +151,25 @@ class Command(BaseCommand):
                 realm_id=realm_id,
             )
             company_info = client.get_company_info()
-            self.stdout.write(self.style.SUCCESS(f"  Connected to: {company_info.CompanyName}"))
+            self.stdout.write(
+                self.style.SUCCESS(f"  Connected to: {company_info.CompanyName}")
+            )
         except OAuthError as e:
-            self.stdout.write(self.style.WARNING(f"  Warning: Could not verify connection: {e}"))
+            self.stdout.write(
+                self.style.WARNING(f"  Warning: Could not verify connection: {e}")
+            )
         except Exception as e:
-            self.stdout.write(self.style.WARNING(f"  Warning: Could not verify connection: {e}"))
+            self.stdout.write(
+                self.style.WARNING(f"  Warning: Could not verify connection: {e}")
+            )
 
         self.stdout.write(
             self.style.SUCCESS("\nSetup complete! You can now use QuickBooks Sync.")
         )
 
-    def setup_with_tokens(self, realm_id, access_token, refresh_token, company_name=None):
+    def setup_with_tokens(
+        self, realm_id, access_token, refresh_token, company_name=None
+    ):
         """Setup with provided tokens."""
         if not access_token or not refresh_token:
             raise CommandError("Both --access-token and --refresh-token are required")
@@ -179,11 +189,15 @@ class Command(BaseCommand):
 
         if created:
             self.stdout.write(
-                self.style.SUCCESS(f"Created new realm: {realm.company_name} ({realm.realm_id})")
+                self.style.SUCCESS(
+                    f"Created new realm: {realm.company_name} ({realm.realm_id})"
+                )
             )
         else:
             self.stdout.write(
-                self.style.SUCCESS(f"Updated existing realm: {realm.company_name} ({realm.realm_id})")
+                self.style.SUCCESS(
+                    f"Updated existing realm: {realm.company_name} ({realm.realm_id})"
+                )
             )
 
         # Test connection
@@ -195,10 +209,12 @@ class Command(BaseCommand):
                 realm_id=realm_id,
             )
             company_info = client.get_company_info()
-            self.stdout.write(self.style.SUCCESS(f"  Connected to: {company_info.CompanyName}"))
+            self.stdout.write(
+                self.style.SUCCESS(f"  Connected to: {company_info.CompanyName}")
+            )
         except Exception as e:
-            self.stdout.write(self.style.WARNING(f"  Warning: Could not verify connection: {e}"))
+            self.stdout.write(
+                self.style.WARNING(f"  Warning: Could not verify connection: {e}")
+            )
 
-        self.stdout.write(
-            self.style.SUCCESS("\nSetup complete!")
-        )
+        self.stdout.write(self.style.SUCCESS("\nSetup complete!"))

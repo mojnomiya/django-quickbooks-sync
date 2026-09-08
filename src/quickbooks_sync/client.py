@@ -21,7 +21,7 @@ from quickbooks_sync.exceptions import (
     TokenExpiredError,
 )
 from quickbooks_sync.settings import qbs_settings
-from quickbooks_sync.utils import calculate_token_expiry, mask_sensitive_data
+from quickbooks_sync.utils import mask_sensitive_data
 
 # Entity mapping from string name to QuickBooks object class
 ENTITY_MAP = {
@@ -169,9 +169,7 @@ class QuickBooksClient:
         except Exception as e:
             raise OAuthError(f"Failed to refresh access token: {str(e)}")
 
-    def get_entity(
-        self, entity_type: str, entity_id: str
-    ) -> Any:
+    def get_entity(self, entity_type: str, entity_id: str) -> Any:
         """
         Get a single entity from QuickBooks.
 
@@ -221,7 +219,9 @@ class QuickBooksClient:
                 query = f"SELECT * FROM {entity_type}"
 
             # Add pagination
-            query += f" ORDERBY Id STARTPOSITION {start_position} MAXRESULTS {max_results}"
+            query += (
+                f" ORDERBY Id STARTPOSITION {start_position} MAXRESULTS {max_results}"
+            )
 
             return entity_class.query(query, qb=self.qb_client)
         except Exception as e:
@@ -260,9 +260,7 @@ class QuickBooksClient:
                 raise RateLimitError()
             raise APIError(f"Failed to create {entity_type}: {str(e)}")
 
-    def update_entity(
-        self, entity_type: str, entity_id: str, entity_data: dict
-    ) -> Any:
+    def update_entity(self, entity_type: str, entity_id: str, entity_data: dict) -> Any:
         """
         Update an existing entity in QuickBooks.
 
