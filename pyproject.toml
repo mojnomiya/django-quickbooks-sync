@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django-quickbooks-sync"
-version = "0.1.0"
+version = "0.1.1"
 description = "Production-grade Django integration for QuickBooks Online with bidirectional sync, OAuth management, and audit logging"
 readme = "README.md"
 license = {text = "MIT"}
