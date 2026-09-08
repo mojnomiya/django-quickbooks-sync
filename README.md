@@ -1,7 +1,7 @@
 # django-quickbooks-sync
 
-[![CI/CD](https://github.com/mojnu/django-quickbooks-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/mojnu/django-quickbooks-sync/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/mojnu/django-quickbooks-sync/branch/main/graph/badge.svg)](https://codecov.io/gh/mojnu/django-quickbooks-sync)
+[![CI/CD](https://github.com/mojnomiya/django-quickbooks-sync/actions/workflows/ci.yml/badge.svg)](https://github.com/mojnomiya/django-quickbooks-sync/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/mojnomiya/django-quickbooks-sync/branch/main/graph/badge.svg)](https://codecov.io/gh/mojnomiya/django-quickbooks-sync)
 [![PyPI version](https://badge.fury.io/py/django-quickbooks-sync.svg)](https://pypi.org/project/django-quickbooks-sync/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/django-quickbooks-sync.svg)](https://pypi.org/project/django-quickbooks-sync/)
 [![Django Versions](https://img.shields.io/pypi/frameworkversions/django/django-quickbooks-sync.svg)](https://pypi.org/project/django-quickbooks-sync/)
@@ -177,7 +177,7 @@ QUICKBOOKS_SYNC_CONFLICT_RESOLUTION = 'last_write_wins'
 ### Setup
 
 ```bash
-git clone https://github.com/mojnu/django-quickbooks-sync.git
+git clone https://github.com/mojnomiya/django-quickbooks-sync.git
 cd django-quickbooks-sync
 python -m venv venv
 source venv/bin/activate
@@ -221,7 +221,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## Support
 
-- [GitHub Issues](https://github.com/mojnu/django-quickbooks-sync/issues)
+- [GitHub Issues](https://github.com/mojnomiya/django-quickbooks-sync/issues)
 - [Documentation](https://django-quickbooks-sync.readthedocs.io/)
 
 ## Acknowledgments
