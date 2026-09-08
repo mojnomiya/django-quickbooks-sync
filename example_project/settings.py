@@ -1,0 +1,126 @@
+"""
+Example Django project for django-quickbooks-sync.
+"""
+
+import os
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "django-insecure-example-key-for-development-only"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
+
+# Application definition
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # Third party apps
+    "quickbooks_sync",
+]
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+ROOT_URLCONF = "example_project.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "example_project.wsgi.application"
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
+
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+# Internationalization
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = "static/"
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# QuickBooks Sync Settings
+QUICKBOOKS_SYNC_CLIENT_ID = os.environ.get("QUICKBOOKS_SYNC_CLIENT_ID", "")
+QUICKBOOKS_SYNC_CLIENT_SECRET = os.environ.get("QUICKBOOKS_SYNC_CLIENT_SECRET", "")
+QUICKBOOKS_SYNC_REDIRECT_URI = os.environ.get(
+    "QUICKBOOKS_SYNC_REDIRECT_URI", "http://localhost:8000/quickbooks/callback/"
+)
+QUICKBOOKS_SYNC_ENVIRONMENT = os.environ.get("QUICKBOOKS_SYNC_ENVIRONMENT", "sandbox")
+QUICKBOOKS_SYNC_WEBHOOK_VERIFIER_TOKEN = os.environ.get(
+    "QUICKBOOKS_SYNC_WEBHOOK_VERIFIER_TOKEN", ""
+)
+
+# Celery Configuration (optional)
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "redis://localhost:6379/0")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+
+# Celery Beat Schedule (optional)
+CELERY_BEAT_SCHEDULE = {
+    "check-tokens-every-hour": {
+        "task": "quickbooks_sync.tasks.check_tokens",
+        "schedule": 3600.0,
+    },
+    "cleanup-sync-logs-daily": {
+        "task": "quickbooks_sync.tasks.cleanup_sync_logs",
+        "schedule": 86400.0,
+    },
+}
