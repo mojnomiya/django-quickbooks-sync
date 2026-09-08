@@ -61,10 +61,10 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mojnu/django-quickbooks-sync"
+Homepage = "https://github.com/mojnomiya/django-quickbooks-sync"
 Documentation = "https://django-quickbooks-sync.readthedocs.io/"
-Repository = "https://github.com/mojnu/django-quickbooks-sync"
-"Bug Tracker" = "https://github.com/mojnu/django-quickbooks-sync/issues"
+Repository = "https://github.com/mojnomiya/django-quickbooks-sync"
+"Bug Tracker" = "https://github.com/mojnomiya/django-quickbooks-sync/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
