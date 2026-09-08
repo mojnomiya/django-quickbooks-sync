@@ -33,6 +33,7 @@ def pytest_configure(config):
             QUICKBOOKS_SYNC_REDIRECT_URI="http://localhost:8000/callback",
             QUICKBOOKS_SYNC_ENVIRONMENT="sandbox",
             QUICKBOOKS_SYNC_WEBHOOK_VERIFIER_TOKEN="test_verifier_token",
+            USE_TZ=True,
         )
 
     django.setup()
