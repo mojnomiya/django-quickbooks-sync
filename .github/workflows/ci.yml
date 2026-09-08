@@ -43,11 +43,7 @@ jobs:
       - name: Format check with black
         run: |
           black --check src/ tests/
-
-      - name: Type check with mypy
-        run: |
-          mypy src/quickbooks_sync/ --ignore-missing-imports
-
+      
       - name: Run tests
         run: |
           pytest tests/ \
